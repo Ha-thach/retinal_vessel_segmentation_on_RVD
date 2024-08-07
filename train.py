@@ -12,38 +12,35 @@ from tensorflow.keras.metrics import Recall, Precision
 from model import build_unet
 from metrics import dice_loss, dice_coef, iou
 
-print("Cuda confirmation:", tf.test.is_built_with_cuda());
-print("Available GPU devices:", tf.config.list_physical_devices('GPU'));
+print("Cuda confirmation:", tf.test.is_built_with_cuda())
+print("Available GPU devices:", tf.config.list_physical_devices('GPU'))
 
 H = 512
 W = 512
 
 # Save weights every 10 epochs
-class SaveWeightsCallback(tf.keras.callbacks.Callback):
-    def __init__(self, model_path_template):
-        super(SaveWeightsCallback, self).__init__()
-        self.model_path_template = model_path_template
-
-    def on_epoch_end(self, epoch, logs=None):
-        if (epoch + 1) % 10 == 0:
-            self.model.save_weights(self.model_path_template.format(epoch=epoch + 1))
-            print(f"Saved weights at epoch {epoch + 1}")
+# class SaveWeightsCallback(tf.keras.callbacks.Callback):
+#     def __init__(self, model_path_template):
+#         super(SaveWeightsCallback, self).__init__()
+#         self.model_path_template = model_path_template
+#
+#     def on_epoch_end(self, epoch, logs=None):
+#         if (epoch + 1) % 10 == 0:
+#             self.model.save_weights(self.model_path_template.format(epoch=epoch + 1))
+#             print(f"Saved weights at epoch {epoch + 1}")
 
 def create_dir(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
-
 def load_data(path):
-    x = sorted(glob(os.path.join(path, "image", "*.jpg")))
-    y = sorted(glob(os.path.join(path, "mask", "*.jpg")))
+    x = sorted(glob(os.path.join(path, "Image", "*.png")))
+    y = sorted(glob(os.path.join(path, "VeinMask", "*.png")))
     return x, y
-
 
 def shuffling(x, y):
     x, y = shuffle(x, y, random_state=42)
     return x, y
-
 
 def read_image(path):
     path = path.decode()
@@ -89,26 +86,25 @@ def tf_dataset(X, Y, batch_size=2):
     dataset = dataset.prefetch(4)
     return dataset
 
-
 if __name__ == "__main__":
     """ Seeding """
     np.random.seed(42)
     tf.random.set_seed(42)
 
     """ Directory to save files """
-    create_dir("/data/nhthach/project/RETINAL/result_artery_vein")
+    create_dir("/data/nhthach/project/RETINAL/training_vein_only(cropted)")
 
     """ Hyperparameters """
     batch_size = 2
     lr = 1e-4
-    num_epochs = 40
-    model_path = os.path.join("/data/nhthach/project/RETINAL/result_artery_vein", "model1.h5")
-    csv_path = os.path.join("/data/nhthach/project/RETINAL/result_artery_vein", "data1.csv")
+    num_epochs = 20
+    model_path = os.path.join("/data/nhthach/project/RETINAL/TrainTestDataset(Crop&Augted)vein", "model3.h5")
+    csv_path = os.path.join("/data/nhthach/project/RETINAL/TrainTestDataset(Crop&Augted)vein", "data3.csv")
 
     """ Dataset """
-    dataset_path = "/data/nhthach/project/RETINAL/DATA/train_test_arteryvein_augted"
-    train_path = os.path.join(dataset_path, "train")
-    valid_path = os.path.join(dataset_path, "test")
+    dataset_path = "/data/nhthach/project/RETINAL/DATA/TrainTestDataset(Crop&Augted)vein"
+    train_path = os.path.join(dataset_path, "Train")
+    valid_path = os.path.join(dataset_path, "Test")
 
     train_x, train_y = load_data(train_path)
     train_x, train_y = shuffling(train_x, train_y)
