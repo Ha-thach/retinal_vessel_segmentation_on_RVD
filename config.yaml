@@ -1,0 +1,62 @@
+seed: 42
+model: SAM-Unetdecoderfree0to6_4decoder #Choose model UNet or R2AttUnet or SAM_UnetDecoder
+data_path: "/data/nhthach/project/DATA/Retinal_Fractal/Original-1"
+image_height: 1024
+image_width: 1024
+batch_size: 1
+num_epochs: 40
+learning_rate: 0.0001
+result_path: "/data/nhthach/project/results/Retinal_Fractal/Original-aug/SAM-Unetdecoder_aug_no_equal_no_norm_lre-4_Adamw.dr_0.3_ep40_Cosine_train_feature_extraction_free0-6_4decode"
+dropout_rate: 0.3
+optimizer: AdamW
+weight_decay: 0
+learning_rate_scheduler: CosineAnnealingLR
+patience: 5
+T_max: 10
+eta_min: 0.00001
+freeze_layer: from 6
+Unet_decoder: 4 layers
+num_epoch_more: 10
+
+
+
+input_folder_path : "/data/nhthach/project/DATA/RETINAL/Binary/train_test_original_aug_no_equal_no_norm"
+output_folder_path : "/data/nhthach/project/DATA/RETINAL/Binary/train_test_original_aug_no_equal_no_norm_channel_0.11.00.1"
+
+blue_factor: 0.1
+green_factor: 1.0
+red_factor: 0.1
+
+#ensemble unet and r2attunet
+result_path_ensemble: "/data/nhthach/project/results/binary_full/(bestUNET)(bestR2Att)/images_result"
+checkpoint_path_unet: "/data/nhthach/project/results/binary_full/(bestUNET)model1-Unet-30ep-dr.3_lre-4_aug_no_equal_no_norm/checkpoint.pth"
+checkpoint_path_r2attunet: "/data/nhthach/project/results/binary_full/(bestR2Att)model1-R2AttUnet-30ep-dr.3_lre-4_aug_no_equal_no_norm/checkpoint.pth"
+
+sam_type: vit_h
+sam_checkpoint_path: "/data/nhthach/project/SAM_checkpoint/sam_vit_h_4b8939.pth"
+
+#unet and sam concatenate
+unet_mask_result_path: "/data/nhthach/project/results/binary_0.15/Unet_aug_no_equal_no_norm_lre-4_Adam1_0.3_ep20_CosineAnnealingL/mask_result"
+sam_mask_result_path: "/data/nhthach/project/results/binary_0.15/SAM-Unetdecoder_aug_no_equal_no_norm_lre-4_Adamw.dr_0.3_ep30_Cosine_train_feature_extraction_free0-8/predicted_mask_aug_no_equal_no_nor_result"
+concatenate_folder: "/data/nhthach/project/results/binary_0.15/(BESTSAM-UnetDecoder)andBESTUNET"
+
+
+
+#concatenate_imgage_from_different_folder.py
+# Paths to directories containing predicted mask images and output concatenation folder
+result_path_1: "/data/nhthach/project/results/Binary/train_test_aug_gaussian_clahe_gamma_sharpen/UNET_lre-4_Adam_dr0.3_ep30_ReduceLROnPlateau/mask_result"
+result_path_2: "/data/nhthach/project/results/binary_full/(BESTSAM)model1-SAM-30ep-dr.3_lre-4_aug_no_equal_no_norm/predicted_mask_aug_no_equal_no_nor_result"  # Path where SAM results are stored
+result_path_3: "/data/nhthach/project/results/train_test_original(addrandomResizeCrop)_testtscale(0.1_0.9)_ratio(1_1)/SAM_Unetdecoder-lre-4_Adam1_0.3_ep40_CosineAnnealingL/predicted_mask_aug_no_equal_no_nor_result"
+save_concatenate_folder: "/data/nhthach/project/results/binary_full/UNET_SAM_UNETSAMD(nopreprecoss)(new)" # Folder to save concatenated comparison images
+
+
+
+
+# Path to dataset folder
+data: "/data/nhthach/project/DATA/RETINAL/Binary/train_test_aug_gaussian_clahe_gamma_sharpen"
+
+
+
+
+#generate mask for fractal
+mask_result_path: "/data/nhthach/project/results/train_test_original(addrandomResizeCrop)_testtscale(0.1_0.9)_ratio(1_1)/SAM_Unetdecoder-lre-4_Adam1_0.3_ep40_CosineAnnealingL/predicted_mask_for_Fractal"
